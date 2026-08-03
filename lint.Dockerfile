@@ -24,7 +24,7 @@ WORKDIR /work
 ENTRYPOINT ["/usr/local/bin/actionlint"]
 
 FROM golang-base AS build-golangci-lint
-ARG GOLANGCI_LINT_VERSION=v2.6.2
+ARG GOLANGCI_LINT_VERSION=v2.12.2
 ENV CGO_ENABLED=0 GOFLAGS=-trimpath
 RUN --mount=type=cache,id=go-build,target=/root/.cache/go-build \
     --mount=type=cache,id=go-mod,target=/go/pkg/mod \
@@ -32,7 +32,7 @@ RUN --mount=type=cache,id=go-build,target=/root/.cache/go-build \
 
 FROM golang-base AS build-modernize
 # modernize lives inside gopls; the version arg is a gopls release tag.
-ARG MODERNIZE_VERSION=v0.21.1
+ARG MODERNIZE_VERSION=v0.23.0
 ENV CGO_ENABLED=0 GOFLAGS=-trimpath
 RUN --mount=type=cache,id=go-build,target=/root/.cache/go-build \
     --mount=type=cache,id=go-mod,target=/go/pkg/mod \
@@ -55,7 +55,7 @@ FROM golang-tools AS modernize
 ENTRYPOINT ["/usr/local/bin/modernize"]
 
 FROM golang-base AS build-shfmt
-ARG SHFMT_VERSION=v3.10.0
+ARG SHFMT_VERSION=v3.13.1
 ENV CGO_ENABLED=0 GOFLAGS=-trimpath
 RUN --mount=type=cache,id=go-build,target=/root/.cache/go-build \
     --mount=type=cache,id=go-mod,target=/go/pkg/mod \
@@ -68,7 +68,7 @@ WORKDIR /work
 ENTRYPOINT ["/usr/local/bin/shfmt"]
 
 FROM ${PYTHON_IMAGE} AS yamllint
-ARG YAMLLINT_VERSION=1.37.1
+ARG YAMLLINT_VERSION=1.38.0
 RUN --mount=type=cache,id=pip,target=/root/.cache/pip \
     pip install --root-user-action=ignore "yamllint==${YAMLLINT_VERSION}"
 USER ${UID}
