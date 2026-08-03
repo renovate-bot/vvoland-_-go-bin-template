@@ -11,11 +11,11 @@ RUN --mount=type=cache,id=apk,target=/var/cache/apk,sharing=locked \
     apk add git && sh /tmp/install-deps.sh dev
 
 FROM golang-base AS build-actionlint
-ARG ACTIONLINT_VERSION=1.7.12
+ARG ACTIONLINT_VERSION=v1.7.12
 ENV CGO_ENABLED=0 GOFLAGS=-trimpath
 RUN --mount=type=cache,id=go-build,target=/root/.cache/go-build \
     --mount=type=cache,id=go-mod,target=/go/pkg/mod \
-    go install "github.com/rhysd/actionlint/cmd/actionlint@v${ACTIONLINT_VERSION}"
+    go install "github.com/rhysd/actionlint/cmd/actionlint@${ACTIONLINT_VERSION}"
 
 FROM ${DISTROLESS_STATIC_IMAGE} AS actionlint
 COPY --from=build-actionlint /go/bin/actionlint /usr/local/bin/actionlint
@@ -24,11 +24,11 @@ WORKDIR /work
 ENTRYPOINT ["/usr/local/bin/actionlint"]
 
 FROM golang-base AS build-golangci-lint
-ARG GOLANGCI_LINT_VERSION=2.6.2
+ARG GOLANGCI_LINT_VERSION=v2.6.2
 ENV CGO_ENABLED=0 GOFLAGS=-trimpath
 RUN --mount=type=cache,id=go-build,target=/root/.cache/go-build \
     --mount=type=cache,id=go-mod,target=/go/pkg/mod \
-    go install "github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v${GOLANGCI_LINT_VERSION}"
+    go install "github.com/golangci/golangci-lint/v2/cmd/golangci-lint@${GOLANGCI_LINT_VERSION}"
 
 FROM golang-base AS build-modernize
 # modernize lives inside gopls; the version arg is a gopls release tag.
@@ -55,11 +55,11 @@ FROM golang-tools AS modernize
 ENTRYPOINT ["/usr/local/bin/modernize"]
 
 FROM golang-base AS build-shfmt
-ARG SHFMT_VERSION=3.10.0
+ARG SHFMT_VERSION=v3.10.0
 ENV CGO_ENABLED=0 GOFLAGS=-trimpath
 RUN --mount=type=cache,id=go-build,target=/root/.cache/go-build \
     --mount=type=cache,id=go-mod,target=/go/pkg/mod \
-    go install "mvdan.cc/sh/v3/cmd/shfmt@v${SHFMT_VERSION}"
+    go install "mvdan.cc/sh/v3/cmd/shfmt@${SHFMT_VERSION}"
 
 FROM ${DISTROLESS_STATIC_IMAGE} AS shfmt
 COPY --from=build-shfmt /go/bin/shfmt /usr/local/bin/shfmt
