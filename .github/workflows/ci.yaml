@@ -57,10 +57,15 @@ jobs:
       - name: Build binary
         run: |
           builder=ci-builder
+          cache_args=()
+          if [[ "$GITHUB_SERVER_URL" == "https://github.com" ]]; then
+            cache_args=(
+              --set "*.cache-from=type=gha,scope=ci-build"
+              --set "*.cache-to=type=gha,mode=max,scope=ci-build"
+            )
+          fi
           docker buildx inspect "$builder" >/dev/null 2>&1 || docker buildx create --name "$builder"
-          docker buildx bake --builder "$builder" binary \
-            --set "*.cache-from=type=gha,scope=ci-build" \
-            --set "*.cache-to=type=gha,mode=max,scope=ci-build"
+          docker buildx bake --builder "$builder" binary "${cache_args[@]}"
 
   success:
     runs-on: ubuntu-latest

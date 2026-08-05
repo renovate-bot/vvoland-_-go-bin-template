@@ -23,7 +23,7 @@ GO_CACHE_MOUNTS=(
 )
 
 BUILD_CACHE_ARGS=()
-if [[ -n ${GITHUB_ACTIONS:-} ]]; then
+if [[ ${GITHUB_SERVER_URL:-} == "https://github.com" ]]; then
     BUILD_CACHE_ARGS=(
         --cache-from "type=gha,scope=lint"
         --cache-to "type=gha,scope=lint,mode=max"
