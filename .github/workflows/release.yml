@@ -50,11 +50,17 @@ jobs:
       - name: Build binary
         run: |
           builder=release-builder
+          cache_args=()
+          if [[ "$GITHUB_SERVER_URL" == "https://github.com" ]]; then
+            cache_args=(
+              --set "*.cache-from=type=gha,scope=${NAME}"
+              --set "*.cache-to=type=gha,mode=max,scope=${NAME}"
+            )
+          fi
           docker buildx inspect "$builder" >/dev/null 2>&1 || docker buildx create --name "$builder"
           docker buildx bake --builder "$builder" binary \
             --set "*.platform=${{ matrix.os }}/${{ matrix.arch }}" \
-            --set "*.cache-from=type=gha,scope=${NAME}" \
-            --set "*.cache-to=type=gha,mode=max,scope=${NAME}"
+            "${cache_args[@]}"
           mv "./_build/${{ env.BINARY_NAME }}${{ matrix.ext }}" "./_build/${NAME}"
           for file in ./_build/*.json; do
             mv "$file" "./_build/${NAME}.$(basename "$file")"
