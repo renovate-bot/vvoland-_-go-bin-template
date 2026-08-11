@@ -47,6 +47,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: refs/tags/${{ env.TAG }}
 
       - name: Build binary
         run: |
@@ -109,6 +111,7 @@ jobs:
           printf 'Uploading files:\n%s\n' "${files[*]}"
           gh release create "${{ env.TAG }}" \
             --repo "${{ env.REPOSITORY }}" \
+            --verify-tag \
             --title "${{ env.TAG }}" \
             --draft \
             --generate-notes \
