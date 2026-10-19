@@ -24,11 +24,11 @@
       "datasourceTemplate": "go"
     },
     {
-      "description": "Track modernize (gopls) version in lint.Dockerfile",
+      "description": "Track modernize (x/tools) version in lint.Dockerfile",
       "customType": "regex",
       "managerFilePatterns": ["/^lint\\.Dockerfile$/"],
       "matchStrings": ["ARG MODERNIZE_VERSION=(?<currentValue>v?\\d+\\.\\d+\\.\\d+)\\n"],
-      "depNameTemplate": "golang.org/x/tools/gopls",
+      "depNameTemplate": "golang.org/x/tools",
       "datasourceTemplate": "go"
     },
     {
